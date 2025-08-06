@@ -9,12 +9,30 @@ import random
 from datetime import datetime
 from pathlib import Path
 import re
+import os
 
 class SimpleTweetGenerator:
     def __init__(self):
         """Initialize with the posts dataset"""
-        with open("extracted_threads_final.json", 'r') as f:
-            self.posts = json.load(f)
+        # Try multiple locations for the data file
+        possible_paths = [
+            "extracted_threads_final.json",
+            "data/extracted_threads_final.json",
+            "../../data/extracted_threads_final.json",
+            os.path.join(os.path.dirname(__file__), "../../data/extracted_threads_final.json")
+        ]
+        
+        for path in possible_paths:
+            try:
+                with open(path, 'r') as f:
+                    self.posts = json.load(f)
+                break
+            except FileNotFoundError:
+                continue
+        else:
+            # If file not found, use empty list
+            print("Warning: extracted_threads_final.json not found, using empty dataset")
+            self.posts = []
         
         # Extract patterns from existing posts
         self.hooks = [p['content']['hook'] for p in self.posts if p['content']['hook']]

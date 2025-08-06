@@ -33,22 +33,37 @@ class UnifiedTweetGenerator:
         
     def load_style_guide(self) -> Dict:
         """Load the style guide and templates from JSON files"""
-        try:
-            with open('twitter_style_guide.json', 'r') as f:
-                self.style_guide = json.load(f)
+        # Helper function to load from multiple locations
+        def load_json_file(filename):
+            import os
+            possible_paths = [
+                filename,
+                f"data/{filename}",
+                f"../../data/{filename}",
+                os.path.join(os.path.dirname(__file__), f"../../data/{filename}")
+            ]
             
-            # Load templates if available separately
-            try:
-                with open('twitter_templates.json', 'r') as f:
-                    self.templates = json.load(f)
-            except FileNotFoundError:
-                # Extract templates from style guide if separate file doesn't exist
-                self.templates = self.style_guide.get('templates', {})
-                
-            return self.style_guide
-        except FileNotFoundError:
+            for path in possible_paths:
+                try:
+                    with open(path, 'r') as f:
+                        return json.load(f)
+                except FileNotFoundError:
+                    continue
+            return None
+        
+        # Load style guide
+        self.style_guide = load_json_file('twitter_style_guide.json')
+        if not self.style_guide:
             print("Warning: twitter_style_guide.json not found. Using basic generation.")
-            return {}
+            self.style_guide = {}
+        
+        # Load templates
+        self.templates = load_json_file('twitter_templates.json')
+        if not self.templates:
+            # Extract templates from style guide if separate file doesn't exist
+            self.templates = self.style_guide.get('templates', {})
+        
+        return self.style_guide
     
     def extract_keywords(self, text: str) -> List[str]:
         """Extract relevant keywords from generated content"""

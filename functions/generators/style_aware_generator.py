@@ -7,21 +7,41 @@ import json
 import random
 from datetime import datetime
 from pathlib import Path
+import os
 
 class StyleAwareTweetGenerator:
     def __init__(self):
         """Initialize with style guide and templates"""
+        # Helper function to load JSON from multiple locations
+        def load_json_file(filename, default=None):
+            possible_paths = [
+                filename,
+                f"data/{filename}",
+                f"../../data/{filename}",
+                os.path.join(os.path.dirname(__file__), f"../../data/{filename}")
+            ]
+            
+            for path in possible_paths:
+                try:
+                    with open(path, 'r') as f:
+                        return json.load(f)
+                except FileNotFoundError:
+                    continue
+            
+            print(f"Warning: {filename} not found, using default")
+            return default or {}
+        
         # Load style guide
-        with open('twitter_style_guide.json', 'r') as f:
-            self.style_guide = json.load(f)
+        self.style_guide = load_json_file('twitter_style_guide.json', {
+            'writing_rules': {'hooks': {'types': {}}}
+        })
         
         # Load templates
-        with open('twitter_templates.json', 'r') as f:
-            self.templates = json.load(f)['templates']
+        templates_data = load_json_file('twitter_templates.json', {'templates': []})
+        self.templates = templates_data.get('templates', [])
         
         # Load existing posts for pattern learning
-        with open('extracted_threads_final.json', 'r') as f:
-            self.example_posts = json.load(f)
+        self.example_posts = load_json_file('extracted_threads_final.json', [])
     
     def generate_hook(self, topic, hook_type=None):
         """Generate a hook following the style guide"""

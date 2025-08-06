@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Comprehensive Twitter/X Content Generator Server
-Optimized for technical founder building in public
+With proper folder structure imports
 """
 
 from flask import Flask, render_template_string, request, jsonify, send_file
@@ -18,70 +18,87 @@ import re
 
 # Add parent directory to path for imports
 sys.path.append(str(Path(__file__).parent))
-# Add functions directories to path
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'functions', 'generators'))
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'functions', 'diagrams'))
+
+# Add functions directory to path
+sys.path.append(str(Path(__file__).parent / 'functions' / 'generators'))
+sys.path.append(str(Path(__file__).parent / 'functions' / 'diagrams'))
 
 # Import the dynamic Gemini generator
 try:
-    from gemini_dynamic_generator import GeminiDynamicGenerator, generate_dynamic_content
+    # Try new location first
+    from functions.generators.gemini_dynamic_generator import GeminiDynamicGenerator, generate_dynamic_content
     gemini_api_key = "AIzaSyAMOvO0_b0o5LdvZgZBVqZ3mSfBwBukzgY"
     gemini_generator = GeminiDynamicGenerator(gemini_api_key)
-    print("✓ Loaded Gemini dynamic generator")
-except Exception as e:
-    print(f"⚠️ Could not load Gemini generator: {e}")
-    gemini_generator = None
+    print("✓ Loaded Gemini dynamic generator from functions/")
+except:
+    try:
+        # Fallback to original location
+        from gemini_dynamic_generator import GeminiDynamicGenerator, generate_dynamic_content
+        gemini_api_key = "AIzaSyAMOvO0_b0o5LdvZgZBVqZ3mSfBwBukzgY"
+        gemini_generator = GeminiDynamicGenerator(gemini_api_key)
+        print("✓ Loaded Gemini dynamic generator from root")
+    except Exception as e:
+        print(f"⚠️ Could not load Gemini generator: {e}")
+        gemini_generator = None
 
 # Import enhanced Gemini generator
 try:
-    from enhanced_gemini_generator import create_enhanced_content
-    print("✓ Loaded enhanced Gemini generator")
+    from functions.generators.enhanced_gemini_generator import create_enhanced_content
+    print("✓ Loaded enhanced Gemini generator from functions/")
     enhanced_generator_available = True
-except Exception as e:
-    print(f"⚠️ Could not load enhanced generator: {e}")
-    enhanced_generator_available = False
+except:
+    try:
+        from enhanced_gemini_generator import create_enhanced_content
+        print("✓ Loaded enhanced Gemini generator from root")
+        enhanced_generator_available = True
+    except Exception as e:
+        print(f"⚠️ Could not load enhanced generator: {e}")
+        enhanced_generator_available = False
 
 # Legacy generators (kept for fallback)
 try:
-    from simple_tweet_generator import SimpleTweetGenerator
+    from functions.generators.simple_tweet_generator import SimpleTweetGenerator
     simple_generator = SimpleTweetGenerator()
-    print("✓ Loaded simple generator (fallback)")
-except Exception as e:
-    print(f"⚠️ Could not load simple generator: {e}")
-    simple_generator = None
+    print("✓ Loaded simple generator from functions/")
+except:
+    try:
+        from simple_tweet_generator import SimpleTweetGenerator
+        simple_generator = SimpleTweetGenerator()
+        print("✓ Loaded simple generator from root")
+    except Exception as e:
+        print(f"⚠️ Could not load simple generator: {e}")
+        simple_generator = None
 
+# Diagram generator
 try:
-    from mermaid_diagram_generator import MermaidDiagramGenerator
+    from functions.diagrams.mermaid_diagram_generator import MermaidDiagramGenerator
     diagram_generator = MermaidDiagramGenerator()
-    print("✓ Loaded diagram generator (Phase 3)")
-except Exception as e:
-    print(f"⚠️ Could not load diagram generator: {e}")
-    diagram_generator = None
-
-# Configure logging
+    print("✓ Loaded diagram generator from functions/")
+except:
+    try:
+        from mermaid_diagram_generator import MermaidDiagramGenerator
+        diagram_generator = MermaidDiagramGenerator()
+        print("✓ Loaded diagram generator from root")
+    except Exception as e:
+        print(f"⚠️ Could not load diagram generator: {e}")
+        diagram_generator = None# Configure logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 app = Flask(__name__)
 
-# Load configuration - try multiple locations
-def load_config():
-    possible_paths = ['config.json', 'data/config.json', '../config.json']
-    for path in possible_paths:
-        try:
-            with open(path, 'r') as f:
-                config = json.load(f)
-                return {
-                    'gemini': config.get('gemini_api_key') or config.get('api_keys', {}).get('gemini'),
-                    'claude': config.get('claude_api_key') or config.get('api_keys', {}).get('claude'),
-                    'openai': config.get('openai_api_key') or config.get('api_keys', {}).get('openai')
-                }
-        except:
-            continue
-    logger.warning("Could not load config.json from any location")
-    return {}
-
-API_KEYS = load_config()
+# Load configuration
+try:
+    with open('config.json', 'r') as f:
+        config = json.load(f)
+        API_KEYS = {
+            'gemini': config.get('gemini_api_key') or config.get('api_keys', {}).get('gemini'),
+            'claude': config.get('claude_api_key') or config.get('api_keys', {}).get('claude'),
+            'openai': config.get('openai_api_key') or config.get('api_keys', {}).get('openai')
+        }
+except Exception as e:
+    logger.warning(f"Could not load config.json: {e}")
+    API_KEYS = {}
 
 def optimize_tweet_length(text, min_chars, max_chars, is_final=False):
     """Optimize tweet to fit within character limits while maintaining completeness"""
