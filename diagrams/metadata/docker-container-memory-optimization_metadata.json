@@ -1,0 +1,17 @@
+{
+  "topic": "Docker container memory optimization",
+  "processed_at": "2025-08-03T14:29:07.951950",
+  "diagram_count": 0,
+  "diagrams": [],
+  "thread_info": {
+    "tweet_count": 9,
+    "template": "ProblemSolution",
+    "keywords": [
+      "docker",
+      "memory",
+      "container",
+      "multi",
+      "stage"
+    ]
+  }
+}

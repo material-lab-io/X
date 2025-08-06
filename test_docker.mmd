@@ -1,0 +1,39 @@
+%%{init: {'theme':'base', 'themeVariables': { 'primaryColor':'#1DA1F2'}}}%%
+graph TB
+ %% Client Layer
+ subgraph "Client Layer"
+ C0[Docker CLI]
+ C1[Docker Desktop]
+ end
+ %% API Gateway
+ GW[API Gateway]
+ %% Service Layer
+ subgraph "Services"
+ S0[Docker Daemon]
+ S1[Container Runtime]
+ S2[Image Registry]
+ end
+ %% Data Layer
+ subgraph "Data"
+ D0[Image Cache]
+ D1[Container Storage]
+ end
+ %% Connections
+ C0 --> GW
+ C1 --> GW
+ GW --> S0
+ GW --> S1
+ GW --> S2
+ S0 --> D0
+ S1 --> D1
+ %% Styling
+ classDef client fill:#E1F5FE,stroke:#01579B,stroke-width:2px
+ classDef service fill:#FFF3E0,stroke:#E65100,stroke-width:2px
+ classDef data fill:#F3E5F5,stroke:#4A148C,stroke-width:2px
+ class C0 client
+ class C1 client
+ class S0 service
+ class S1 service
+ class S2 service
+ class D0 data
+ class D1 data

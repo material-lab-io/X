@@ -1,0 +1,8 @@
+[
+  "Here's a thread about Docker caching and how it can make your builds faster",
+  "Docker builds can be slow if you don't use caching properly. Every time you change your code, Docker might rebuild everything from scratch",
+  "The key is to order your Dockerfile commands from least to most frequently changing. Put system dependencies first, then requirements, then your code",
+  "Also use multi-stage builds to keep your final image small. You can have a build stage with all dev dependencies and copy only what you need to the final stage",
+  "Docker caching can make your builds much faster. I've seen builds go from 15 minutes to under 3 minutes just by fixing the Dockerfile order",
+  "Hope this helps with your Docker builds!"
+]

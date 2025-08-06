@@ -1,0 +1,13 @@
+{
+  "topic": "Microservices Communication Patterns",
+  "generatorType": "StyleAware",
+  "template": "WorkflowShare",
+  "contentType": "Thread",
+  "generatedTweets": [
+    "1/5 Microservices talking to each other? Here are the 3 patterns you NEED to know! \ud83c\udfaf",
+    "2/5 Pattern 1: Synchronous HTTP/REST - Simple but creates coupling. Good for real-time needs.",
+    "3/5 Pattern 2: Message Queues - Async & resilient! Here's the flow:\n\n```mermaid\ngraph LR\n    A[Service A] -->|Publish| Q[Message Queue]\n    Q -->|Subscribe| B[Service B]\n    Q -->|Subscribe| C[Service C]\n    style Q fill:#f9f,stroke:#333,stroke-width:4px\n```",
+    "4/5 Pattern 3: Event Streaming - Best for high-volume data. Think Kafka, Pulsar.",
+    "5/5 Pro tip: Start simple (HTTP), evolve to queues when you need resilience. What pattern do you use? \ud83e\udd14"
+  ]
+}

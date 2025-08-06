@@ -1,0 +1,147 @@
+{
+  "templates": [
+    {
+      "template_name": "Build-in-Public: Problem/Solution Walkthrough",
+      "purpose": "Share a specific technical challenge and its resolution within your startup's context",
+      "structure": {
+        "hook": {
+          "format": "[State common/frustrating technical problem]",
+          "example": "Ever get stuck in a loop of debugging flaky integration tests for your Docker containers? I lost half a day to this."
+        },
+        "context": {
+          "format": "While building [startup feature], I ran into [specific issue] with [technology]",
+          "example": "While building the new agent memory module for my app, I ran into a nasty issue with container reproducibility across my dev and CI environments."
+        },
+        "failed_attempts": {
+          "format": "My first attempts using [method] failed because [reason]",
+          "example": "My first attempts using simple 'docker-compose up' failed because of non-deterministic package install order.",
+          "visual": "Screenshot of error or GIF of failing test"
+        },
+        "breakthrough": {
+          "format": "The breakthrough came when I realized [insight]. Here's the fix:",
+          "example": "The breakthrough came when I realized the problem wasn't the code, but the base image's package manager.",
+          "visual": "Code snippet or terminal GIF of solution"
+        },
+        "takeaway": {
+          "format": "The key takeaway: [lesson]. Hope this saves someone else a few hours!",
+          "hashtags": "#Docker #DevOps #buildinpublic"
+        }
+      },
+      "style_rules": {
+        "tone": "Relatable, helpful, authentic",
+        "visuals": "2 minimum (error + solution)",
+        "length": "Single tweet or 3-4 tweet thread"
+      },
+      "use_cases": [
+        "Debugging stories",
+        "Infrastructure issues",
+        "Testing challenges",
+        "Performance optimizations"
+      ]
+    },
+    {
+      "template_name": "First Principles Conceptual Deep Dive",
+      "purpose": "Break down a complex technical concept from scratch for your audience",
+      "structure": {
+        "tweet_1": {
+          "format": "[Topic] might seem like magic, but it's actually [simple analogy]. Let's break down the core intuition from scratch. 🧵",
+          "example": "Diffusion models might seem like magic, but they're actually just master 'de-noisers.' Let's break down the core intuition from scratch. 🧵"
+        },
+        "tweet_2": {
+          "format": "First, [foundational concept]. [Simple explanation with analogy]",
+          "example": "First, the 'forward process'. Imagine you have a clear image. All we do is add tiny bits of random noise, over and over, until it's pure static.",
+          "visual": "Simple diagram showing concept"
+        },
+        "tweet_3": {
+          "format": "Now, [key insight]. [Explanation of core mechanism]",
+          "example": "Now, the magic: the 'reverse process.' The model's ONLY job is to predict the noise that was added at each step.",
+          "visual": "Diagram or animation"
+        },
+        "tweet_4": {
+          "format": "By [mechanism], it can [result]. [Practical explanation]",
+          "example": "By learning to predict and subtract noise, it can walk backward from pure noise to a clean image.",
+          "visual": "Pseudo-code snippet"
+        },
+        "tweet_5": {
+          "format": "TL;DR: [one-line summary]. Understanding this is key for [practical application]",
+          "example": "TL;DR: Diffusion models aren't 'painting'; they're 'de-noising.' Understanding this is key for debugging and advanced prompting.",
+          "hashtags": "#AI #DeepLearning #DiffusionModels"
+        }
+      },
+      "style_rules": {
+        "tone": "Educational, clear, patient",
+        "visuals": "One per tweet minimum",
+        "length": "5-7 tweet thread",
+        "progression": "Simple → Complex"
+      },
+      "use_cases": [
+        "AI/ML concepts",
+        "System architecture",
+        "Algorithm explanations",
+        "Framework deep-dives"
+      ]
+    },
+    {
+      "template_name": "Here's My Workflow Tool Share",
+      "purpose": "Share personal toolset and workflows that provide immediate value",
+      "structure": {
+        "hook": {
+          "format": "I spend most of my day [activity]. Here are [number] [tool type] that are absolutely essential to my workflow. 👇",
+          "example": "I spend most of my day in the terminal building and testing AI agents. Here are 3 Bash/CLI tools that are absolutely essential to my workflow. 👇"
+        },
+        "tool_1": {
+          "format": "1. [Tool name] (tag creator if available)\nWhy it's great: [benefit]\nMy favorite use case: [specific example]",
+          "example": "1. fzf (@junegunn)\nWhy it's great: Fuzzy finder that makes searching through anything instant\nMy favorite use case: Piping history into fzf to reuse complex commands",
+          "visual": "Terminal GIF showing tool in action"
+        },
+        "tool_2": {
+          "format": "2. [Tool name]\nWhy it's great: [benefit]\nMy favorite use case: [specific example]",
+          "example": "2. jq\nWhy it's great: Parse JSON like a pro in the terminal\nMy favorite use case: Extracting error messages from nested JSON logs",
+          "visual": "Terminal GIF"
+        },
+        "tool_3": {
+          "format": "3. [Tool name]\nWhy it's great: [benefit]\nMy favorite use case: [specific example]",
+          "example": "3. direnv\nWhy it's great: Auto-load environment variables per directory\nMy favorite use case: Managing different API keys for staging/production",
+          "visual": "Terminal GIF"
+        },
+        "conclusion": {
+          "format": "These [number] tools combined have probably saved me [impact]. What's one [tool type] you can't live without?",
+          "hashtags": "#DevTools #Bash #CLI #Productivity"
+        }
+      },
+      "style_rules": {
+        "tone": "Pragmatic, helpful, conversational",
+        "visuals": "One GIF per tool",
+        "length": "Single long tweet or 4-5 tweet thread",
+        "focus": "Practical value"
+      },
+      "use_cases": [
+        "Developer tools",
+        "Productivity tips",
+        "Workflow optimization",
+        "Environment setup"
+      ]
+    }
+  ],
+  "template_usage_guide": {
+    "selection_criteria": {
+      "problem_solution": "Use when you've overcome a specific technical challenge",
+      "conceptual_dive": "Use when explaining complex topics your audience needs to understand",
+      "workflow_share": "Use when you have practical tools/tips that save time"
+    },
+    "customization_tips": [
+      "Always ground templates in your real work",
+      "Include specific numbers and metrics where possible",
+      "Reference your startup/project for context",
+      "Use your actual code/commands, not generic examples"
+    ],
+    "visual_requirements": {
+      "minimum_per_post": 1,
+      "types_by_template": {
+        "problem_solution": ["Error screenshots", "Solution GIFs"],
+        "conceptual_dive": ["Diagrams", "Code snippets"],
+        "workflow_share": ["Terminal recordings", "Tool demos"]
+      }
+    }
+  }
+}

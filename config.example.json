@@ -1,0 +1,22 @@
+{
+  "api_keys": {
+    "gemini": "YOUR_GEMINI_API_KEY_HERE",
+    "anthropic": "YOUR_CLAUDE_API_KEY_HERE",
+    "openai": "YOUR_OPENAI_API_KEY_HERE"
+  },
+  "models": {
+    "primary": "gemini-pro",
+    "fallback": "claude-3-opus",
+    "embeddings": "text-embedding-ada-002"
+  },
+  "generation_params": {
+    "temperature": 0.7,
+    "max_tokens": 500,
+    "top_p": 0.9
+  },
+  "paths": {
+    "posts_data": "extracted_threads_final.json",
+    "writing_guide": "../XPG/Twitter_X Technical Content Strategy_.docx",
+    "output_dir": "generated_tweets/"
+  }
+}

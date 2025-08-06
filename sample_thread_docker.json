@@ -1,0 +1,23 @@
+{
+  "topic": "Docker Container Lifecycle Management",
+  "generatorType": "StyleAware",
+  "template": "ConceptualDeepDive",
+  "contentType": "Thread",
+  "generatedTweets": [
+    "1/6 Ever wondered what happens inside Docker when you run a container? \ud83d\udc33 Let's dive deep into the container lifecycle!",
+    "2/6 Docker containers go through distinct states: Created \u2192 Running \u2192 Paused \u2192 Stopped \u2192 Removed. Each transition is managed by the Docker daemon.",
+    "3/6 Here's how it works visually:\n\n\ud83d\udcca [Flowchart Attached Below]",
+    "4/6 The `docker run` command does THREE things: 1) Creates container from image 2) Allocates resources 3) Starts the process. Magic! \u2728",
+    "5/6 Pro tip: Use `docker ps -a` to see ALL containers (including stopped). Many devs miss this and wonder where their containers went! \ud83d\udd0d",
+    "6/6 Understanding lifecycle = better debugging. Next time a container acts weird, check its state first! What's your biggest Docker challenge? \ud83d\udcac"
+  ],
+  "diagram": {
+    "type": "state",
+    "code": "stateDiagram-v2\n    [*] --> Created: docker create\n    Created --> Running: docker start\n    Running --> Paused: docker pause\n    Paused --> Running: docker unpause\n    Running --> Stopped: docker stop\n    Stopped --> Running: docker restart\n    Stopped --> Removed: docker rm\n    Running --> Removed: docker rm -f\n    Removed --> [*]\n    \n    note right of Running: Container actively executing\n    note right of Paused: Processes suspended\n    note right of Stopped: Process terminated, filesystem preserved",
+    "explanation": "This state diagram shows the complete Docker container lifecycle, from creation to removal. Each arrow represents a Docker command that transitions the container between states.",
+    "placement": {
+      "tweet_number": 3,
+      "reasoning": "Placed after introducing the concept of container states"
+    }
+  }
+}

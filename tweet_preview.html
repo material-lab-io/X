@@ -1,0 +1,182 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Tweet Preview</title>
+    <meta charset="UTF-8">
+    <style>
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, Arial, sans-serif; 
+            max-width: 800px; 
+            margin: 0 auto; 
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .header {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 { color: #1da1f2; margin: 0 0 10px 0; }
+        h2 { color: #333; text-align: center; }
+        .tweet {
+            background: white;
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            position: relative;
+            padding-left: 60px;
+        }
+        .tweet-number {
+            position: absolute;
+            left: 20px;
+            top: 20px;
+            background: #1da1f2;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+        .tweet-text {
+            white-space: pre-wrap;
+            line-height: 1.5;
+            font-size: 16px;
+            color: #14171a;
+        }
+        .meta {
+            color: #657786;
+            font-size: 14px;
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid #e1e8ed;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🐦 Tweet Preview</h1>
+        <p style="color: #666; margin: 0;">Generated content with proper emoji display</p>
+    </div>
+<h2>Redis Caching Strategies for MicroservicesContent</h2>
+        <div class="tweet">
+            <div class="tweet-number">1</div>
+            <div class="tweet-text">1/9 Here&#x27;s how 9 Here&#x27;s a Twitter thread about Redis caching strategies for microservices, following your guidelines:
+
+1/9</div>
+            <div class="meta">
+                <strong>122</strong> characters
+                
+            </div>
+        </div>
+        
+        <div class="tweet">
+            <div class="tweet-number">2</div>
+            <div class="tweet-text">2/9 Think your Redis cache is *actually* helping performance?  Or is it secretly a ticking time bomb of stale data? 💣 Caching in microservices is tricky.  Let&#x27;s dive into strategies to avoid common pitfalls. 👇 thread below</div>
+            <div class="meta">
+                <strong>222</strong> characters
+                 • Contains emojis
+            </div>
+        </div>
+        
+        <div class="tweet">
+            <div class="tweet-number">3</div>
+            <div class="tweet-text">3/9 #microservices #redis #caching #backend
+
+2/9
+
+Invalidation is EVERYTHING.  Forget &quot;set it and forget it&quot; caching.  Consider these:</div>
+            <div class="meta">
+                <strong>134</strong> characters
+                
+            </div>
+        </div>
+        
+        <div class="tweet">
+            <div class="tweet-number">4</div>
+            <div class="tweet-text">4/9 *   **TTL (Time-To-Live):** Simple, but can lead to &quot;cache stampedes&quot; if many expire simultaneously.  Stagger them!
+*   **Event-Driven Invalidation:**  When data changes, publish an event. Services subscribe and invalidate their cache. \u2705 More precise!</div>
+            <div class="meta">
+                <strong>260</strong> characters
+                
+            </div>
+        </div>
+        
+        <div class="tweet">
+            <div class="tweet-number">5</div>
+            <div class="tweet-text">5/9 #cachingstrategies
+
+3/9
+
+TTL gotchas to avoid: -  `Hard TTLs`: All keys expire at same time = database overload. Use jitter: `TTL + RAND(0,variance)`. -  `Too long TTLs`: Stale data city! \ud83d\udea7 Balance cache hit ratio and data freshness. Experiment!</div>
+            <div class="meta">
+                <strong>260</strong> characters
+                
+            </div>
+        </div>
+        
+        <div class="tweet">
+            <div class="tweet-number">6</div>
+            <div class="tweet-text">6/9 \ud83e\uddea
+-  `Cache Stampedes`: Protect using &quot;probabilistic early expiration&quot; – proactively refresh when near expiry.
+
+#redis #backendengineering
+
+4/9
+
+Distributed caching tips:</div>
+            <div class="meta">
+                <strong>185</strong> characters
+                 • Contains emojis
+            </div>
+        </div>
+        
+        <div class="tweet">
+            <div class="tweet-number">7</div>
+            <div class="tweet-text">7/9 *   **Consistent Hashing:**  Essential for even data distribution across Redis cluster. Minimizes cache misses on scale`-out`.
+*   **Cache-Aside Pattern:** App checks cache, then DB if miss. Simpler, but can have initial latency.
+
+#microservicesarchitecture
+
+5/9</div>
+            <div class="meta">
+                <strong>266</strong> characters
+                
+            </div>
+        </div>
+        
+        <div class="tweet">
+            <div class="tweet-number">8</div>
+            <div class="tweet-text">8/9 Bonus:  Monitor your cache! \ud83d\udcc8
+
+*   Hit ratio:  Are you actually caching effectively?
+*   Eviction rate:  Is your cache too small?
+*   Latency:  Is Redis itself becoming a bottleneck?
+
+Don&#x27;t let your cache become a liability.  optimize with caching strategies! \ud83d\udca1</div>
+            <div class="meta">
+                <strong>287</strong> characters
+                
+            </div>
+        </div>
+        
+        <div class="tweet">
+            <div class="tweet-number">9</div>
+            <div class="tweet-text">9/9 #devops #performanceoptimization
+
+RT if this saved you debugging time!</div>
+            <div class="meta">
+                <strong>74</strong> characters
+                
+            </div>
+        </div>
+        
+</body>
+</html>

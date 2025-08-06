@@ -1,0 +1,11 @@
+{
+  "topic": "Docker Container Lifecycle",
+  "generatorType": "UnifiedGenerator",
+  "generatedTweets": [
+    "\ud83d\udc33 Understanding Docker container lifecycle is crucial for debugging and optimization. Let's explore!",
+    "Docker containers have 5 main states: Created, Running, Paused, Stopped, and Removed. Each serves a purpose.",
+    "Here's a visual representation of the Docker lifecycle states and transitions:\n\n\ud83d\udcca [Diagram Below]",
+    "Pro tip: Use `docker ps -a` to see ALL containers, not just running ones. This helps track container history!",
+    "What's your biggest Docker challenge? Let me know below! \ud83d\udc47"
+  ]
+}

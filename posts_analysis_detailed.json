@@ -1,0 +1,389 @@
+{
+  "basic_stats": {
+    "total_posts": 14,
+    "content_categories": {
+      "AI Agent Testing": 4,
+      "Docker": 3,
+      "DevTools": 1,
+      "Video Models": 2,
+      "LLMs": 3,
+      "Agentic Coding": 1
+    },
+    "authors": {
+      "@bfspector": 2,
+      "@iximiuz": 4,
+      "@_akhaliq": 3,
+      "@rasbt": 2,
+      "@karpathy": 1,
+      "@MinqiJiang": 1,
+      "@Saboo_Shubham_": 1
+    },
+    "tweet_types": {
+      "Announcement": 6,
+      "Tutorial": 6,
+      "Insight": 1,
+      "Experiment": 1
+    },
+    "audience_levels": {
+      "Advanced": 7,
+      "Intermediate": 6,
+      "Beginner": 1
+    },
+    "thread_vs_single": {
+      "threads": 11,
+      "single": 3
+    }
+  },
+  "content_patterns": {
+    "avg_content_length": 533.7142857142857,
+    "avg_hook_length": 68.57142857142857,
+    "hooks_with_questions": 0,
+    "avg_hashtags": 0,
+    "avg_mentions": 1.2857142857142858,
+    "avg_links": 1.2142857142857142,
+    "posts_with_links": 8,
+    "hook_examples": [
+      "We've never enjoyed watching people chop Llamas into tiny pieces",
+      "We've never enjoyed watching people chop Llamas into tiny pieces. So, we're excited to be releasing our Low-Latency-Llama Megakernel!",
+      "Thinking of containers as VMs is an extremely leaking abstraction.",
+      "Every Pod gets its own IP address",
+      "SlowFast-LLaVA, a training-free video large language model"
+    ]
+  },
+  "style_analysis": {
+    "tone_combinations": [
+      [
+        [
+          "Friendly",
+          "Technical"
+        ],
+        4
+      ],
+      [
+        [
+          "Technical"
+        ],
+        4
+      ],
+      [
+        [
+          "Technical",
+          "Thought-provoking"
+        ],
+        3
+      ],
+      [
+        [
+          "Humorous",
+          "Technical"
+        ],
+        2
+      ],
+      [
+        [
+          "Thought-provoking"
+        ],
+        1
+      ]
+    ],
+    "top_keywords_by_category": {
+      "AI Agent Testing": [
+        [
+          "introduces",
+          3
+        ],
+        [
+          "synchronization",
+          3
+        ],
+        [
+          "architecture",
+          3
+        ],
+        [
+          "research",
+          3
+        ],
+        [
+          "learning",
+          3
+        ],
+        [
+          "input",
+          3
+        ],
+        [
+          "agents",
+          3
+        ],
+        [
+          "megakernel",
+          2
+        ],
+        [
+          "entire",
+          2
+        ],
+        [
+          "llama",
+          2
+        ]
+      ],
+      "Docker": [
+        [
+          "containers",
+          17
+        ],
+        [
+          "container",
+          12
+        ],
+        [
+          "linux",
+          6
+        ],
+        [
+          "kubernetes",
+          6
+        ],
+        [
+          "images",
+          4
+        ],
+        [
+          "managers",
+          4
+        ],
+        [
+          "multiple",
+          4
+        ],
+        [
+          "docker",
+          4
+        ],
+        [
+          "processes",
+          3
+        ],
+        [
+          "learning",
+          3
+        ]
+      ],
+      "DevTools": [
+        [
+          "networking",
+          6
+        ],
+        [
+          "layers",
+          3
+        ],
+        [
+          "kubernetes",
+          2
+        ],
+        [
+          "service",
+          2
+        ],
+        [
+          "model",
+          1
+        ],
+        [
+          "overview",
+          1
+        ],
+        [
+          "every",
+          1
+        ],
+        [
+          "address",
+          1
+        ],
+        [
+          "focuses",
+          1
+        ],
+        [
+          "complexity",
+          1
+        ]
+      ],
+      "Video Models": [
+        [
+          "video",
+          5
+        ],
+        [
+          "model",
+          4
+        ],
+        [
+          "features",
+          4
+        ],
+        [
+          "llava",
+          3
+        ],
+        [
+          "spatial",
+          3
+        ],
+        [
+          "multi",
+          3
+        ],
+        [
+          "modal",
+          3
+        ],
+        [
+          "visual",
+          3
+        ],
+        [
+          "research",
+          2
+        ],
+        [
+          "slowfast",
+          2
+        ]
+      ],
+      "LLMs": [
+        [
+          "transformer",
+          5
+        ],
+        [
+          "output",
+          3
+        ],
+        [
+          "update",
+          3
+        ],
+        [
+          "reasoning",
+          3
+        ],
+        [
+          "scaling",
+          3
+        ],
+        [
+          "train",
+          2
+        ],
+        [
+          "layer",
+          2
+        ],
+        [
+          "finetuning",
+          2
+        ],
+        [
+          "randomly",
+          2
+        ],
+        [
+          "initialized",
+          2
+        ]
+      ],
+      "Agentic Coding": [
+        [
+          "agent",
+          5
+        ],
+        [
+          "python",
+          4
+        ],
+        [
+          "typescript",
+          2
+        ],
+        [
+          "teams",
+          2
+        ],
+        [
+          "structured",
+          2
+        ],
+        [
+          "multi",
+          2
+        ],
+        [
+          "framework",
+          2
+        ],
+        [
+          "motia",
+          1
+        ],
+        [
+          "built",
+          1
+        ],
+        [
+          "software",
+          1
+        ]
+      ]
+    }
+  },
+  "engagement_patterns": {
+    "difficulty_distribution": {
+      "5": 4,
+      "3": 4,
+      "4": 4,
+      "2": 2
+    },
+    "high_difficulty_topics": [
+      "AI Agent Testing",
+      "AI Agent Testing",
+      "DevTools",
+      "Video Models",
+      "Video Models",
+      "LLMs",
+      "AI Agent Testing",
+      "LLMs"
+    ],
+    "writing_style_tags": {
+      "technical-announcement": 3,
+      "code-example": 2,
+      "educational": 4,
+      "step-by-step": 2,
+      "structured-learning": 2,
+      "research-summary": 3,
+      "comprehensive-guide": 1,
+      "insight": 1,
+      "historical-perspective": 1,
+      "technical-comparison": 1,
+      "theoretical": 1,
+      "comparison": 1,
+      "technical-explanation": 1,
+      "research-findings": 1,
+      "benchmark-results": 1,
+      "listicle": 1,
+      "resource-compilation": 1,
+      "research-roundup": 1,
+      "announcement": 1
+    }
+  },
+  "technical_depth": {
+    "code_mentions": 6,
+    "tools_mentions": 5,
+    "metrics_mentions": 3,
+    "architecture_mentions": 9
+  }
+}

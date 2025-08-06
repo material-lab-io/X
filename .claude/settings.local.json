@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:x.com)",
+      "WebFetch(domain:threadreaderapp.com)",
+      "WebFetch(domain:threadreaderapp.com)",
+      "WebFetch(domain:threadreaderapp.com)",
+      "WebFetch(domain:threadreaderapp.com)",
+      "WebFetch(domain:threadreaderapp.com)"
+    ],
+    "deny": []
+  }
+}

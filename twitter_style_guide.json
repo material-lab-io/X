@@ -1,0 +1,140 @@
+{
+  "metadata": {
+    "version": "1.0",
+    "source": "Twitter_X Technical Content Strategy_.docx",
+    "last_updated": "2025-01-31"
+  },
+  "core_philosophy": {
+    "model": "Hub-and-Spoke",
+    "principle": "Deep work creates value, Twitter distributes it",
+    "goal": "Build technical credibility, not chase metrics"
+  },
+  "writing_rules": {
+    "structure": {
+      "paragraphs": {
+        "max_lines": 3,
+        "rule": "Frequent line breaks for mobile readability"
+      },
+      "whitespace": {
+        "usage": "Liberal",
+        "purpose": "Reduce cognitive load, improve scannability"
+      },
+      "signposting": {
+        "threads": ["1/", "2/", "numbered bullets"],
+        "single_tweets": ["•", "-", "*", "bullet points"]
+      }
+    },
+    "hooks": {
+      "types": {
+        "provocative_question": {
+          "example": "Ever wondered how {topic} really works?",
+          "purpose": "Engage critical thinking"
+        },
+        "you_hook": {
+          "example": "Are your {pain_point}?",
+          "purpose": "Create instant relevance"
+        },
+        "surprising_statement": {
+          "example": "Controversial: {bold_claim}",
+          "purpose": "Demand explanation"
+        }
+      },
+      "rule": "First line determines scroll-stop rate"
+    },
+    "formatting": {
+      "code": {
+        "inline": "Use backticks for `commands`, `functions`, `filenames`",
+        "blocks": "Share as syntax-highlighted images via Carbon"
+      },
+      "emphasis": {
+        "bold": "Use sparingly for key concepts",
+        "caps": "Only for CRITICAL WARNINGS"
+      },
+      "emoji": {
+        "usage": "Functional, not decorative",
+        "patterns": {
+          "topics": "🐳 Docker, 🤖 AI, 🧪 experiments, 💻 terminal",
+          "signposts": "👇 thread below, 🧵 thread, 🔗 link",
+          "status": "✅ success, ❌ failure, 🚧 WIP"
+        }
+      }
+    },
+    "voice_and_tone": {
+      "personas": {
+        "teacher": {
+          "use_for": "Tutorials, conceptual deep-dives",
+          "tone": "Clear, patient, educational"
+        },
+        "explorer": {
+          "use_for": "Experiments, open questions",
+          "tone": "Curious, honest, speculative"
+        },
+        "builder": {
+          "use_for": "Progress updates, practical tips",
+          "tone": "Pragmatic, direct, helpful"
+        }
+      },
+      "authenticity": "Show the messy middle - debugging, failures, aha moments"
+    }
+  },
+  "content_patterns": {
+    "frequency": {
+      "posts_per_day": "1-3",
+      "threads_per_week": "1-2",
+      "principle": "Sustainable cadence over volume"
+    },
+    "distribution": {
+      "code_experiments": 0.35,
+      "tutorials": 0.25,
+      "conceptual_insights": 0.20,
+      "learning_in_public": 0.15,
+      "questions": 0.05
+    },
+    "visual_content": {
+      "minimum_ratio": 0.5,
+      "types": {
+        "terminal_recordings": ["Asciinema", "TermToSVG", "Screen Studio"],
+        "code_snippets": ["Carbon", "Raycast", "CodeSnap"],
+        "diagrams": ["Excalidraw", "Mermaid.js", "tldraw"],
+        "screencasts": ["Under 60 seconds", "Focus on one workflow"]
+      }
+    }
+  },
+  "thread_structure": {
+    "framework": "Numbered Listicle",
+    "components": {
+      "tweet_1": {
+        "name": "The Hook",
+        "purpose": "State topic and value proposition",
+        "must_include": ["Clear topic", "Number of tweets", "Thread indicator (🧵, 👇)"]
+      },
+      "tweets_2_to_n-1": {
+        "name": "The Body",
+        "purpose": "One core idea per tweet",
+        "structure": ["Numbered step", "Supporting visual", "Concise explanation"]
+      },
+      "tweet_n": {
+        "name": "Summary/CTA",
+        "purpose": "Conclude and drive action",
+        "elements": ["TL;DR summary", "Call to action", "Link to resources"]
+      }
+    }
+  },
+  "engagement_patterns": {
+    "high_performing_formats": [
+      "Visual how-to's with clear steps",
+      "Demos of novel/surprising results",
+      "Well-justified controversial takes"
+    ],
+    "question_quality": {
+      "bad": "What do you think of AI agents?",
+      "good": "I'm using library X for agent testing but hitting race conditions with mock APIs. Better approaches?"
+    }
+  },
+  "content_pipeline": {
+    "seed": "Single atomic tweet to test interest",
+    "sprout": "Expand successful tweet into thread",
+    "grow": "Convert thread into blog post",
+    "harvest": "Promote blog with new summary thread"
+  }
+}
