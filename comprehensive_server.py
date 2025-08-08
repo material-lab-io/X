@@ -25,7 +25,7 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'functions', 'diagram
 # Import the dynamic Gemini generator
 try:
     from gemini_dynamic_generator import GeminiDynamicGenerator, generate_dynamic_content
-    gemini_api_key = "AIzaSyAMOvO0_b0o5LdvZgZBVqZ3mSfBwBukzgY"
+    gemini_api_key = "AIzaSyBav2kap2T_sUDsE5M1XxOsEsgTKSXNTbM"
     gemini_generator = GeminiDynamicGenerator(gemini_api_key)
     print("✓ Loaded Gemini dynamic generator")
 except Exception as e:
@@ -82,6 +82,45 @@ def load_config():
     return {}
 
 API_KEYS = load_config()
+
+# Load templates from JSON file
+def load_templates():
+    """Load templates from twitter_templates.json"""
+    template_paths = [
+        'data/twitter_templates.json',
+        'twitter_templates.json',
+        '../data/twitter_templates.json'
+    ]
+    
+    for path in template_paths:
+        try:
+            with open(path, 'r') as f:
+                data = json.load(f)
+                templates = data.get('templates', [])
+                # Convert to a format usable by the server
+                template_dict = {}
+                for template in templates:
+                    name = template.get('template_name', 'Unknown')
+                    # Simplify template names for dropdown
+                    if 'Problem' in name and 'Solution' in name:
+                        template_dict['problem-solution'] = template
+                    elif 'Conceptual' in name or 'Deep Dive' in name:
+                        template_dict['conceptual'] = template
+                    elif 'Workflow' in name or 'Tool' in name:
+                        template_dict['workflow'] = template
+                    elif 'Announcement' in name:
+                        template_dict['announcement'] = template
+                    # Store with full name as well
+                    template_dict[name.lower().replace(' ', '-').replace(':', '')] = template
+                print(f"✓ Loaded {len(templates)} templates from {path}")
+                return template_dict
+        except Exception as e:
+            continue
+    
+    print("⚠️ Could not load templates from JSON, using defaults")
+    return {}
+
+LOADED_TEMPLATES = load_templates()
 
 def optimize_tweet_length(text, min_chars, max_chars, is_final=False):
     """Optimize tweet to fit within character limits while maintaining completeness"""
@@ -320,6 +359,28 @@ def generate_optimized_tweet_content(topic, style, position=1, total=1, context=
                 "What concepts should I dive into next?",
             ]
         },
+        'announcement': {
+            'single': [
+                "🚀 Big news: {topic} is now LIVE! After {timeframe} of building, we've solved {problem}. Try it free → {link}",
+                "📢 Announcing {topic}! {feature} that {benefit}. Early access for the first {number} users.",
+                "🎉 We're hiring for {topic}! Looking for someone who {requirement}. Join us in {mission}.",
+            ],
+            'first': [
+                "🚀 We just shipped {topic} - and it's live NOW!",
+                "Big announcement: After {timeframe} building in stealth, {topic} is here!",
+                "📢 Some news: We just {achievement}!",
+            ],
+            'middle': [
+                "What's new:\n✅ {feature1}\n✅ {feature2}\n✅ {feature3}",
+                "The problem: {problem}.\n\nOur solution: {solution}.",
+                "Why this matters: {impact}.\n\nWhat's next: {roadmap}.",
+            ],
+            'final': [
+                "Try it free → {link}\n\nNo credit card required.",
+                "We're just getting started. {vision}",
+                "Join {number}+ users already using it → {link}",
+            ]
+        },
         'workflow-tool-share': {
             'single': [
                 "My {workflow} setup: {tool1} → {tool2} → {tool3}. Speed: {improvement}.",
@@ -420,6 +481,27 @@ def generate_contextual_replacements(topic, style, context):
             'choice': 'Podman for production',
             'reason': 'security requirements',
             'philosophy': 'security vs convenience',
+        })
+    
+    # Announcement-specific replacements
+    if style == 'announcement':
+        replacements.update({
+            'timeframe': '6 months',
+            'problem': 'complex deployment pipelines',
+            'link': 'yourproduct.com/try',
+            'feature': 'one-click deployments',
+            'benefit': 'saves 2 hours daily',
+            'number': '100',
+            'requirement': 'loves automation',
+            'mission': 'simplifying DevOps',
+            'achievement': 'raised our seed round',
+            'feature1': 'Real-time monitoring',
+            'feature2': 'Automated rollbacks',
+            'feature3': 'Cost tracking per deploy',
+            'solution': 'AI-powered deployment optimization',
+            'impact': 'Deploy 10x faster with confidence',
+            'roadmap': 'Multi-cloud support coming Q2',
+            'vision': 'Every developer should deploy fearlessly.',
         })
     
     # Technical concept replacements
@@ -863,8 +945,9 @@ HTML_TEMPLATE = """
                     <div class="form-group">
                         <label for="style">Style / Template</label>
                         <select id="style" name="style">
+                            <option value="announcement">🚀 Startup Announcement</option>
+                            <option value="problem-solution">Problem/Solution Walkthrough</option>
                             <option value="conceptual-deep-dive">Conceptual Deep Dive</option>
-                            <option value="problem-solution">Problem/Solution</option>
                             <option value="workflow-tool-share">Workflow/Tool Share</option>
                             <option value="explanatory">Explanatory</option>
                             <option value="observational">Observational</option>
@@ -872,9 +955,6 @@ HTML_TEMPLATE = """
                             <option value="tool-comparison">Tool Comparison</option>
                             <option value="debugging-story">Debugging Story</option>
                             <option value="build-in-public">Build in Public</option>
-                            <option value="problem-solution">Problem/Solution</option>
-                            <option value="conceptual-deep-dive">Conceptual Deep Dive</option>
-                            <option value="workflow-tool-share">Workflow/Tool Share</option>
                         </select>
                     </div>
                     
@@ -975,6 +1055,63 @@ HTML_TEMPLATE = """
                         </select>
                     </div>
                     
+                    <div class="form-group" id="themeSelectionGroup" style="display: none;">
+                        <label style="display: flex; align-items: center; gap: 10px;">
+                            <input type="checkbox" id="auto_theme" name="auto_theme" checked>
+                            <span>🎨 Auto-Select Theme (AI-powered)</span>
+                        </label>
+                        
+                        <div id="manualThemeGroup" style="margin-top: 10px; display: none;">
+                            <label for="plantuml_theme">Manual Theme Selection</label>
+                            <select id="plantuml_theme" name="plantuml_theme" style="width: 100%; padding: 8px;">
+                                <optgroup label="Dark/Modern Themes">
+                                    <option value="cyborg">Cyborg - Dark futuristic</option>
+                                    <option value="hacker">Hacker - Matrix style</option>
+                                    <option value="black-knight">Black Knight - Dark medieval</option>
+                                    <option value="carbon-gray">Carbon Gray - Data systems</option>
+                                    <option value="reddress-darkblue">RedDress Dark - Finance</option>
+                                </optgroup>
+                                <optgroup label="Light/Clean Themes">
+                                    <option value="lightgray">Light Gray - Documentation</option>
+                                    <option value="silver">Silver - Enterprise</option>
+                                    <option value="spacelab">Spacelab - Scientific</option>
+                                    <option value="plain" selected>Plain - Default</option>
+                                    <option value="sandstone">Sandstone - Stable</option>
+                                </optgroup>
+                                <optgroup label="Colorful Themes">
+                                    <option value="vibrant">Vibrant - Startup</option>
+                                    <option value="cerulean">Cerulean - Web/Frontend</option>
+                                    <option value="minty">Minty - Fresh/Minimal</option>
+                                    <option value="sunlust">Sunlust - Warm/Friendly</option>
+                                    <option value="toy">Toy - Playful</option>
+                                </optgroup>
+                                <optgroup label="Technical/Professional">
+                                    <option value="aws-orange">AWS Orange - Cloud</option>
+                                    <option value="cloudscape-design">Cloudscape - AWS Design</option>
+                                    <option value="blueprint">Blueprint - Architecture</option>
+                                    <option value="bluegray">Blue Gray - Microservices</option>
+                                    <option value="materia">Materia - Material Design</option>
+                                </optgroup>
+                                <optgroup label="Special Themes">
+                                    <option value="amiga">Amiga - Retro</option>
+                                    <option value="crt-amber">CRT Amber - Terminal</option>
+                                    <option value="mars">Mars - Space/NASA</option>
+                                    <option value="metal">Metal - IoT/Hardware</option>
+                                    <option value="sketchy">Sketchy - Hand-drawn</option>
+                                    <option value="superhero">Superhero - Comic</option>
+                                    <option value="united">United - Team/Collab</option>
+                                    <option value="mimeograph">Mimeograph - Document</option>
+                                    <option value="mono">Mono - B&W</option>
+                                    <option value="reddress-lightblue">RedDress Light - Healthcare</option>
+                                    <option value="none">None - No theme</option>
+                                </optgroup>
+                            </select>
+                            <small style="color: #888; display: block; margin-top: 5px;">
+                                31 professional PlantUML themes available
+                            </small>
+                        </div>
+                    </div>
+                    
                     <button type="button" id="generateBtn" onclick="generateContent()">Generate Content</button>
                 </div>
                 
@@ -1015,7 +1152,28 @@ HTML_TEMPLATE = """
         // Toggle diagram type selector
         document.getElementById('include_diagram').addEventListener('change', function() {
             const diagramTypeGroup = document.getElementById('diagramTypeGroup');
+            const themeSelectionGroup = document.getElementById('themeSelectionGroup');
             diagramTypeGroup.style.display = this.checked ? 'block' : 'none';
+            
+            // Show theme selection only for PlantUML
+            if (this.checked) {
+                const diagramType = document.getElementById('diagram_type').value;
+                themeSelectionGroup.style.display = (diagramType === 'plantuml' || diagramType === 'both') ? 'block' : 'none';
+            } else {
+                themeSelectionGroup.style.display = 'none';
+            }
+        });
+        
+        // Toggle theme selection based on diagram type
+        document.getElementById('diagram_type').addEventListener('change', function() {
+            const themeSelectionGroup = document.getElementById('themeSelectionGroup');
+            themeSelectionGroup.style.display = (this.value === 'plantuml' || this.value === 'both') ? 'block' : 'none';
+        });
+        
+        // Toggle manual theme selector
+        document.getElementById('auto_theme').addEventListener('change', function() {
+            const manualThemeGroup = document.getElementById('manualThemeGroup');
+            manualThemeGroup.style.display = this.checked ? 'none' : 'block';
         });
         
         async function generateContent() {
@@ -1036,6 +1194,8 @@ HTML_TEMPLATE = """
             const include_diagram = document.getElementById('include_diagram').checked;
             const diagram_type = include_diagram ? document.getElementById('diagram_type').value : 'mermaid';
             const use_enhanced = document.getElementById('use_enhanced').checked;
+            const auto_theme = document.getElementById('auto_theme').checked;
+            const plantuml_theme = !auto_theme ? document.getElementById('plantuml_theme').value : null;
             
             const data = {
                 topic: topic,
@@ -1043,7 +1203,9 @@ HTML_TEMPLATE = """
                 style: style,
                 context: context,
                 include_diagram: include_diagram,
-                diagram_type: diagram_type
+                diagram_type: diagram_type,
+                auto_theme: auto_theme,
+                plantuml_theme: plantuml_theme
             };
             
             // Add enhanced options if enabled
@@ -1360,11 +1522,14 @@ def generate():
     try:
         data = request.json
         topic = data.get('topic', '')
-        content_type = data.get('content_type', 'single')
+        # Support both 'type' and 'content_type' for backward compatibility
+        content_type = data.get('content_type') or data.get('type', 'single')
         style = data.get('style', 'explanatory')
         context = data.get('context', '')
         include_diagram = data.get('include_diagram', False)
         diagram_type = data.get('diagram_type', 'mermaid')
+        auto_theme = data.get('auto_theme', True)
+        plantuml_theme = data.get('plantuml_theme', None)
         
         if not topic:
             return jsonify({'success': False, 'error': 'No topic provided'})
@@ -1398,7 +1563,9 @@ def generate():
                     template=template,
                     context=context,
                     api_key=gemini_api_key,
-                    diagram_type=diagram_type
+                    diagram_type=diagram_type,
+                    auto_theme=auto_theme,
+                    manual_theme=plantuml_theme
                 )
                 print(f"[DEBUG] Gemini result keys: {list(result.keys()) if isinstance(result, dict) else 'Not a dict'}")
                 if 'error' in result:
@@ -1430,6 +1597,8 @@ def generate():
                     print(f"[DEBUG] Unexpected result structure. Keys: {list(result.keys())}")
                     if 'error' in result:
                         print(f"[DEBUG] Result contains error: {result['error']}")
+                        # Don't set tweets to empty - raise exception to trigger fallback
+                        raise Exception(f"Gemini generation failed: {result.get('error', 'Unknown error')}")
                     tweets = []
                 
                 # Extract diagram if present
@@ -1690,14 +1859,19 @@ def serve_diagram(filename):
         return "Error serving diagram", 500
 
 if __name__ == '__main__':
+    import argparse
+    parser = argparse.ArgumentParser(description='Twitter/X Content Generator Server')
+    parser.add_argument('--port', type=int, default=5000, help='Port to run the server on')
+    args = parser.parse_args()
+    
     print("\n🚀 Starting Optimized Twitter/X Content Generator")
     print("=" * 50)
     print("✨ Features:")
     print("   • Length-optimized tweets (180-260 chars)")
-    print("   • 9 template styles for different content types")
+    print("   • 10 template styles for different content types")
     print("   • Smart thread generation with proper flow")
     print("   • Context-aware content generation")
-    print("\n📍 Server running at: http://localhost:5000")
+    print(f"\n📍 Server running at: http://localhost:{args.port}")
     print("\nPress Ctrl+C to stop\n")
     
-    app.run(host='0.0.0.0', port=5000, debug=False)
+    app.run(host='0.0.0.0', port=args.port, debug=False)

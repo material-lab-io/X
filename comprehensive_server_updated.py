@@ -1711,7 +1711,7 @@ if __name__ == '__main__':
     print("=" * 50)
     print("✨ Features:")
     print("   • Length-optimized tweets (180-260 chars)")
-    print("   • 9 template styles for different content types")
+    print("   • 10 template styles for different content types")
     print("   • Smart thread generation with proper flow")
     print("   • Context-aware content generation")
     print("\n📍 Server running at: http://localhost:5000")

@@ -121,13 +121,87 @@
         "Workflow optimization",
         "Environment setup"
       ]
+    },
+    {
+      "template_name": "Startup Announcement",
+      "purpose": "Announce product launches, features, hiring, milestones, or company updates with authenticity and excitement",
+      "structure": {
+        "hook": {
+          "format": "[Big news emoji] [Direct announcement statement] [Emoji]",
+          "example": "🚀 We just shipped the feature that took 6 months to build - and it's live NOW!"
+        },
+        "context": {
+          "format": "[What problem this solves] + [Who asked for it/why we built it]",
+          "example": "After 100+ user interviews, we heard the same pain point: 'I need to monitor my AI agents in production but existing tools are too complex.'"
+        },
+        "details": {
+          "format": "[Key features/benefits in bullet points or numbered list]",
+          "example": "What's new:\n✅ Real-time agent performance monitoring\n✅ One-click rollback when things go wrong\n✅ Cost tracking per agent call\n✅ Natural language debugging"
+        },
+        "personal_touch": {
+          "format": "[Behind-the-scenes detail or founder emotion]",
+          "example": "Not gonna lie - we almost scrapped this 3 times. The architecture was brutal. But seeing early users save hours debugging made it worth every late night."
+        },
+        "call_to_action": {
+          "format": "[Clear next step] + [Link/resource]",
+          "example": "Try it free for 14 days → [link]\n\nNo credit card. Takes 2 minutes to set up.",
+          "hashtags": "#buildinpublic #startup #AI"
+        }
+      },
+      "variations": {
+        "product_launch": {
+          "hook": "After [timeframe] of building in stealth, [product] is live!",
+          "focus": "Problem solved, key differentiator, early access offer"
+        },
+        "feature_release": {
+          "hook": "You asked, we built it: [feature] is now live!",
+          "focus": "User feedback that drove it, immediate benefit, how to access"
+        },
+        "hiring": {
+          "hook": "We're hiring our first/next [role]! Here's what we're looking for:",
+          "focus": "Mission, specific skills needed, what makes role unique"
+        },
+        "milestone": {
+          "hook": "[Number] [metric] reached! Here's what this means:",
+          "focus": "Journey to get here, key learnings, what's next"
+        },
+        "funding": {
+          "hook": "Some news: We just raised [amount] to [mission]",
+          "focus": "What this enables, team growth, product roadmap"
+        }
+      },
+      "style_rules": {
+        "tone": "Authentic excitement, transparent, founder-voice",
+        "visuals": "Product screenshots, metrics dashboards, team photos",
+        "length": "Single tweet for urgent news, 2-3 tweet thread for context",
+        "timing": "Post at peak engagement times (9am or 12pm user's timezone)"
+      },
+      "best_practices": [
+        "Lead with the news, not the backstory",
+        "Include specific numbers when possible",
+        "Show don't tell - use screenshots/demos",
+        "Make the CTA crystal clear",
+        "Reply to early comments to boost engagement",
+        "Pin important announcements to profile"
+      ],
+      "use_cases": [
+        "Product launches",
+        "Feature releases",
+        "Hiring announcements",
+        "Funding rounds",
+        "Company milestones",
+        "Partnership announcements",
+        "Open source releases",
+        "Community events"
+      ]
     }
   ],
   "template_usage_guide": {
     "selection_criteria": {
       "problem_solution": "Use when you've overcome a specific technical challenge",
       "conceptual_dive": "Use when explaining complex topics your audience needs to understand",
-      "workflow_share": "Use when you have practical tools/tips that save time"
+      "workflow_share": "Use when you have practical tools/tips that save time",
+      "startup_announcement": "Use when announcing product launches, features, hiring, milestones, or funding"
     },
     "customization_tips": [
       "Always ground templates in your real work",
@@ -140,7 +214,8 @@
       "types_by_template": {
         "problem_solution": ["Error screenshots", "Solution GIFs"],
         "conceptual_dive": ["Diagrams", "Code snippets"],
-        "workflow_share": ["Terminal recordings", "Tool demos"]
+        "workflow_share": ["Terminal recordings", "Tool demos"],
+        "startup_announcement": ["Product screenshots", "Metrics dashboards", "Team photos", "Demo videos"]
       }
     }
   }

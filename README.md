@@ -38,7 +38,7 @@ XPosts/
 - **Multi-Model LLM Support**: Gemini, Claude, and OpenAI with automatic fallback
 - **Advanced Thread Generation**: Create engaging multi-tweet threads
 - **Diagram Integration**: Generate Mermaid and PlantUML diagrams
-- **9 Content Styles**: Various templates for different content types
+- **10 Content Styles**: Various templates for different content types
 - **Character Optimization**: Ensures tweets stay within optimal length
 - **Web Interface**: User-friendly Flask web application
 - **Twitter Publishing**: Direct posting to Twitter/X

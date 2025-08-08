@@ -12,9 +12,13 @@ import re
 import subprocess
 import base64
 import os
+import sys
 import requests
 import urllib.parse
 from typing import Dict, List, Optional, Tuple
+
+# Add path for diagram generators
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'diagrams'))
 
 class GeminiDynamicGenerator:
     def __init__(self, api_key: str):
@@ -22,7 +26,15 @@ class GeminiDynamicGenerator:
         genai.configure(api_key=api_key)
         self.model = genai.GenerativeModel('gemini-1.5-flash')
         
-    def generate_content(self, topic: str, content_type: str, template: str, context: str = "", diagram_type: str = "mermaid") -> Dict:
+        # Initialize PlantUML generator
+        try:
+            from plantuml_generator import PlantUMLGenerator
+            self.plantuml_generator = PlantUMLGenerator()
+        except ImportError:
+            print("Warning: PlantUML generator not available")
+            self.plantuml_generator = None
+        
+    def generate_content(self, topic: str, content_type: str, template: str, context: str = "", diagram_type: str = "mermaid", auto_theme: bool = True, manual_theme: str = None) -> Dict:
         """Generate dynamic content using Gemini API"""
         
         # Build the prompt based on template
@@ -36,6 +48,46 @@ class GeminiDynamicGenerator:
             
             # Parse the response
             content_data = self._parse_gemini_response(response.text, content_type)
+            
+            # Inject PlantUML theme if PlantUML diagram exists
+            if diagram_type in ["plantuml", "both"]:
+                if "diagram" in content_data and content_data["diagram"]:
+                    if "plantuml_code" in content_data["diagram"]:
+                        plantuml_code = content_data["diagram"]["plantuml_code"]
+                        import re
+                        
+                        # Remove any existing theme directive
+                        plantuml_code = re.sub(r'!theme\s+\w+\s*\n?', '', plantuml_code)
+                        
+                        if manual_theme:
+                            # Use manually selected theme
+                            theme_name = manual_theme
+                            theme_desc = f"Manually selected theme: {manual_theme}"
+                            print(f"[DEBUG] Using manual PlantUML theme: {theme_name}")
+                        elif auto_theme:
+                            # Auto-select theme based on topic and context
+                            try:
+                                from auto_theme_selector import auto_select_theme
+                                theme_name, theme_desc = auto_select_theme(topic, context)
+                                print(f"[DEBUG] Auto-selected PlantUML theme: {theme_name} - {theme_desc}")
+                            except ImportError:
+                                print("[DEBUG] Auto theme selector not available, using default")
+                                theme_name = "plain"
+                                theme_desc = "Default theme"
+                        else:
+                            # No theme selected
+                            theme_name = "plain"
+                            theme_desc = "Default theme"
+                        
+                        # Add selected theme after @startuml
+                        if plantuml_code.strip().startswith('@startuml'):
+                            plantuml_code = plantuml_code.replace('@startuml', f'@startuml\n!theme {theme_name}', 1)
+                        else:
+                            plantuml_code = f'@startuml\n!theme {theme_name}\n{plantuml_code}\n@enduml'
+                        
+                        content_data["diagram"]["plantuml_code"] = plantuml_code
+                        content_data["diagram"]["theme"] = theme_name
+                        content_data["diagram"]["theme_description"] = theme_desc
             
             # Add metadata
             content_data.update({
@@ -122,10 +174,18 @@ Requirements:
 Diagram Generation:
 For technical concepts that benefit from visualization, generate a PlantUML diagram.
 
-PlantUML syntax examples:
-- Sequence diagram: @startuml\nAlice -> Bob: Hello\nBob --> Alice: Hi!\n@enduml
-- Class diagram: @startuml\nclass User {\n  +name: String\n  +email: String\n}\n@enduml
-- Component diagram: @startuml\n[Client] --> [Server]\n[Server] --> [Database]\n@enduml
+PlantUML Rules:
+1. Start with @startuml and end with @enduml
+2. Do NOT include theme directives (!theme) - these will be added automatically
+3. Do NOT include URLs or comments starting with 'http'
+4. Use proper component syntax: [ComponentName] for components
+5. Use proper queue/database syntax: database "Name" as alias OR queue "Name" as alias
+6. NEVER use semicolons (;) at the end of lines - PlantUML doesn't need them
+
+Valid PlantUML examples (NO SEMICOLONS):
+- Component: @startuml\n[Order Service] --> [Kafka]\n[Kafka] --> [Payment Service]\n@enduml
+- With actors: @startuml\nactor User\nUser -> [API Gateway]\n[API Gateway] -> [Service]\n@enduml
+- With queue: @startuml\nqueue "Kafka" as K\n[Service1] -> K\nK -> [Service2]\n@enduml
 
 Format: {"diagram": {"plantuml_code": "@startuml\\n...\\n@enduml", "tweet_position": N}}
 """
@@ -134,9 +194,20 @@ Format: {"diagram": {"plantuml_code": "@startuml\\n...\\n@enduml", "tweet_positi
 Diagram Generation:
 Generate BOTH Mermaid and PlantUML diagrams for the same concept.
 
+PlantUML Rules:
+- Start with @startuml and end with @enduml
+- NO theme directives or URLs
+- Use [ComponentName] for components
+- Use queue "Name" as alias for message queues
+- NO SEMICOLONS at end of lines
+
+Mermaid Rules:
+- Use graph TD or graph LR
+- Proper node syntax: A[Label]
+
 Format: {"diagram": {
-  "mermaid_code": "graph TD\\n...",
-  "plantuml_code": "@startuml\\n...\\n@enduml",
+  "mermaid_code": "graph TD\\nA[Service1] --> B[Service2]",
+  "plantuml_code": "@startuml\\n[Service1] --> [Service2]\\n@enduml",
   "tweet_position": N
 }}
 """
@@ -179,15 +250,23 @@ Output valid JSON only. No markdown formatting around the JSON.
             if cleaned.endswith("```"):
                 cleaned = cleaned[:-3]
             
+            # Fix common Gemini formatting issues
+            # Replace position: X/Y with position: X
+            import re
+            cleaned = re.sub(r'"position":\s*(\d+)/\d+', r'"position": \1', cleaned)
+            
             # Parse JSON
             data = json.loads(cleaned.strip())
             
             # Validate and clean data
             if content_type == "thread":
                 if "tweets" in data:
-                    # Ensure character counts are accurate
+                    # Ensure character counts are accurate and position is integer
                     for tweet in data["tweets"]:
                         tweet["character_count"] = len(tweet["content"])
+                        # Ensure position is an integer
+                        if "position" in tweet:
+                            tweet["position"] = int(tweet["position"])
                 else:
                     raise ValueError("No tweets found in response")
             else:
@@ -262,13 +341,36 @@ Output valid JSON only. No markdown formatting around the JSON.
             traceback.print_exc()
             return None
     
-    def generate_plantuml_diagram(self, plantuml_code: str, server_url: str = "http://localhost:8080") -> Optional[str]:
-        """Generate PNG from PlantUML code using PlantUML server"""
+    def generate_plantuml_diagram(self, plantuml_code: str, topic: str = None) -> Optional[str]:
+        """Generate PNG from PlantUML code using the new PlantUML generator"""
+        if not self.plantuml_generator:
+            print("Warning: PlantUML generator not initialized, using fallback method")
+            return self._generate_plantuml_fallback(plantuml_code)
+        
         try:
-            print(f"Generating PlantUML diagram: {plantuml_code[:50]}...")
+            print(f"Generating PlantUML diagram for topic: {topic}")
+            result = self.plantuml_generator.generate_from_content(
+                content=plantuml_code,
+                topic=topic,
+                output_format='png'
+            )
             
+            if result['success']:
+                print(f"✅ PlantUML diagram generated: {result['path']}")
+                return result['path']
+            else:
+                print(f"❌ PlantUML generation failed: {result.get('error')}")
+                return self._generate_plantuml_fallback(plantuml_code)
+                
+        except Exception as e:
+            print(f"Error generating PlantUML: {e}")
+            return self._generate_plantuml_fallback(plantuml_code)
+    
+    def _generate_plantuml_fallback(self, plantuml_code: str) -> Optional[str]:
+        """Fallback method using direct server calls"""
+        try:
             # Try local server first, then fallback to Kroki.io
-            servers = [server_url, "https://kroki.io"]
+            servers = ["http://localhost:8080", "https://kroki.io"]
             
             for server in servers:
                 try:
@@ -335,7 +437,8 @@ Output valid JSON only. No markdown formatting around the JSON.
                 import string
                 
                 # PlantUML encoding (deflate + custom base64)
-                compressed = zlib.compress(plantuml_code.encode('utf-8'))[2:-4]
+                # Use compression level 9 and remove both header and checksum for PlantUML
+                compressed = zlib.compress(plantuml_code.encode('utf-8'), 9)[2:-4]
                 
                 # Custom base64 encoding for PlantUML
                 encode_table = string.ascii_uppercase + string.ascii_lowercase + string.digits + '-_'
@@ -355,7 +458,8 @@ Output valid JSON only. No markdown formatting around the JSON.
                         encoded += encode_table[((compressed[i] & 0x3) << 4)]
                 
                 # Generate PNG using PlantUML server
-                png_url = f"{server_url}/png/{encoded}"
+                # Try with ~1 prefix for HUFFMAN encoding as suggested by PlantUML
+                png_url = f"{server_url}/png/~1{encoded}"
                 
                 response = requests.get(png_url, timeout=10)
                 if response.status_code == 200:
@@ -488,14 +592,16 @@ Output valid JSON only. No markdown formatting around the JSON.
 def generate_dynamic_content(topic: str, content_type: str = "thread", 
                            template: str = "Conceptual Deep Dive", 
                            context: str = "", api_key: str = None,
-                           diagram_type: str = "mermaid") -> Dict:
+                           diagram_type: str = "mermaid",
+                           auto_theme: bool = True,
+                           manual_theme: str = None) -> Dict:
     """Generate content dynamically using Gemini"""
     
     if not api_key:
         api_key = "AIzaSyC2ZSm7_G9TxUSSrGaOJ2x0ouTDGhGyd9s"
     
     generator = GeminiDynamicGenerator(api_key)
-    content = generator.generate_content(topic, content_type, template, context, diagram_type)
+    content = generator.generate_content(topic, content_type, template, context, diagram_type, auto_theme, manual_theme)
     
     # Generate diagram(s) if included
     if "diagram" in content:
@@ -515,7 +621,10 @@ def generate_dynamic_content(topic: str, content_type: str = "thread",
         
         # Generate PlantUML diagram
         if "plantuml_code" in diagram_data:
-            plantuml_path = generator.generate_plantuml_diagram(diagram_data["plantuml_code"])
+            plantuml_path = generator.generate_plantuml_diagram(
+                diagram_data["plantuml_code"], 
+                topic=topic
+            )
             print(f"[DEBUG] Generated PlantUML diagram: {plantuml_path}")
             if plantuml_path:
                 diagram_paths["plantuml"] = plantuml_path

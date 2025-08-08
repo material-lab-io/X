@@ -1,0 +1,26 @@
+{
+  "content_type": "single",
+  "diagram": "graph LR\n  A[Order Service] --> B(queue \"Order Events\");\n  B --> C[Inventory Service];\n  B --> D[Payment Service];\n  C --> E(queue \"Inventory Updates\");\n  D --> F(queue \"Payment Status\");",
+  "diagram_data": {
+    "mermaid_code": "graph LR\n  A[Order Service] --> B(queue \"Order Events\");\n  B --> C[Inventory Service];\n  B --> D[Payment Service];\n  C --> E(queue \"Inventory Updates\");\n  D --> F(queue \"Payment Status\");",
+    "plantuml_code": "@startuml\n!theme bluegray\n[Order Service] --> queue \"Order Events\"\nqueue \"Order Events\" --> [Inventory Service]\nqueue \"Order Events\" --> [Payment Service]\n[Inventory Service] --> queue \"Inventory Updates\"\n[Payment Service] --> queue \"Payment Status\"\n@enduml",
+    "plantuml_image_path": "generated_tweets/diagrams/plantuml/plantuml_20250808_104918.png",
+    "theme": "bluegray",
+    "theme_description": "Professional theme for microservices and containerized apps",
+    "tweet_position": 1
+  },
+  "generator": "gemini_dynamic",
+  "saved_as": "generated_tweets/single_Microservices_Architecture_Bui_20250808_104918.json",
+  "style": "conceptual-deep-dive",
+  "success": true,
+  "topic": "Microservices Architecture: Building scalable e-commerce with Docker, Kubernetes, and Kafka",
+  "tweets": [
+    {
+      "character_count": 372,
+      "content": "Building a scalable e-commerce platform? Microservices with Docker, Kubernetes, & Kafka are your allies.  Kafka's pub/sub model decouples services, enabling independent scaling & fault tolerance.  Imagine order processing (with retries!) independent of inventory updates.  This resilience is crucial for high-traffic scenarios. #microservices #ecommerce #kubernetes #kafka",
+      "diagram_path": "generated_tweets/diagrams/plantuml/plantuml_20250808_104918.png",
+      "has_diagram": true,
+      "position": 1
+    }
+  ]
+}

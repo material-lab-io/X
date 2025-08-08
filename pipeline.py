@@ -116,6 +116,8 @@ class ContentPipeline:
                         content_type: str = "thread",
                         style: str = "explanatory",
                         include_diagram: bool = False,
+                        diagram_engine: str = "mermaid",
+                        optimize_layout: bool = False,
                         generator_type: str = "auto") -> Dict[str, Any]:
         """
         Generate content using the pipeline
@@ -125,6 +127,7 @@ class ContentPipeline:
             content_type: Type of content (single, thread, etc.)
             style: Style template to use
             include_diagram: Whether to generate accompanying diagram
+            diagram_engine: Which diagram engine to use (mermaid, plantuml, both)
             generator_type: Which generator to use (auto, gemini, enhanced, simple)
         
         Returns:
@@ -158,11 +161,24 @@ class ContentPipeline:
         # Generate content
         try:
             if hasattr(generator, 'generate_content'):
-                content_result = generator.generate_content(
-                    topic=topic,
-                    content_type=content_type,
-                    template=style
-                )
+                # Check if generator supports diagram_type parameter
+                import inspect
+                sig = inspect.signature(generator.generate_content)
+                params = sig.parameters
+                
+                if 'diagram_type' in params:
+                    content_result = generator.generate_content(
+                        topic=topic,
+                        content_type=content_type,
+                        template=style,
+                        diagram_type=diagram_engine if include_diagram else 'mermaid'
+                    )
+                else:
+                    content_result = generator.generate_content(
+                        topic=topic,
+                        content_type=content_type,
+                        template=style
+                    )
             elif hasattr(generator, 'generate_tweet'):
                 content_result = generator.generate_tweet(topic, style)
             else:
@@ -293,6 +309,20 @@ def main():
                        help='Style template to use')
     parser.add_argument('--diagram', action='store_true',
                        help='Include diagram generation')
+    parser.add_argument('--diagram-engine', default='mermaid',
+                       choices=['mermaid', 'plantuml', 'both'],
+                       help='Diagram engine to use (mermaid, plantuml, or both)')
+    parser.add_argument('--optimize-layout', action='store_true',
+                       help='Enable AI-aided layout optimization for PlantUML diagrams')
+    parser.add_argument('--thread-diagram', type=str, metavar='FILE',
+                       help='Generate multi-diagram thread from input file (Markdown/JSON/text)')
+    parser.add_argument('--thread-theme', default='brand',
+                       choices=['dark', 'light', 'brand'],
+                       help='Visual style theme for thread diagrams (default: brand)')
+    parser.add_argument('--plantuml-theme', default='plain',
+                       help='Official PlantUML theme (e.g., cyborg, blueprint, mars)')
+    parser.add_argument('--list-themes', action='store_true',
+                       help='List all available PlantUML themes')
     parser.add_argument('--generator', default='auto',
                        choices=['auto', 'gemini', 'enhanced', 'simple'],
                        help='Which generator to use')
@@ -311,9 +341,39 @@ def main():
     pipeline = ContentPipeline()
     
     # Handle different modes
-    if args.server:
+    if args.list_themes:
+        # List all available PlantUML themes
+        try:
+            from functions.diagrams.theme_selector import list_themes_formatted
+            print(list_themes_formatted())
+        except ImportError:
+            print("Theme selector module not found. Ensure theme_selector.py is in functions/diagrams/")
+        sys.exit(0)
+    elif args.server:
         print("Starting web server...")
         os.system('python comprehensive_server.py')
+    elif args.thread_diagram:
+        # Handle thread diagram generation
+        print(f"🚀 Generating thread diagrams from: {args.thread_diagram}")
+        try:
+            from functions.diagrams.thread_diagram_generator import generate_thread_diagrams
+            result = generate_thread_diagrams(
+                input_file=args.thread_diagram,
+                theme=args.thread_theme,
+                optimize=args.optimize_layout,
+                plantuml_theme=args.plantuml_theme
+            )
+            if result.get('success'):
+                print(f"✅ Generated {result['total_sections']} diagrams")
+                for i, diagram in enumerate(result['diagrams'], 1):
+                    status = "✓" if diagram['success'] else "✗"
+                    print(f"  {status} {i}. {diagram['title']} ({diagram['type']})")
+                    if diagram.get('png_file'):
+                        print(f"      → {diagram['png_file']}")
+            else:
+                print(f"❌ Thread generation failed: {result.get('error')}")
+        except Exception as e:
+            print(f"❌ Error generating thread diagrams: {e}")
     elif args.interactive or not args.topic:
         pipeline.run_interactive()
     elif args.analyze:
@@ -326,6 +386,8 @@ def main():
             content_type=args.type,
             style=args.style,
             include_diagram=args.diagram,
+            diagram_engine=args.diagram_engine if args.diagram else 'mermaid',
+            optimize_layout=args.optimize_layout,
             generator_type=args.generator
         )
         
